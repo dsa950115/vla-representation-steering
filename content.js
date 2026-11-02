@@ -21,7 +21,7 @@ window.SITE_CONTENT = {
     "situation_02": "Preview",
     "situation_03": ", placeholder data: the videos, counts and paths below are synthetic,\n only to show the layout.",
     "situation_04": "Adapting to a change in intent",
-    "situation_05": "In offline, the VLA model is trained with the original instruction:",
+    "situation_05": "In the offline phase, the VLA model is trained with the original instruction:",
     "situation_06": "= “Put the white mug on the left plate and put the yellow-and-white mug on the right plate.”",
     "situation_07": "Under this instruction, the policy is also trained with expert demonstrations in which the white mug is handled first.",
     "situation_08": "Now the intent changes. We want the robot to",
