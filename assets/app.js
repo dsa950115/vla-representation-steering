@@ -152,7 +152,7 @@ function ushow(){const e=+document.getElementById('usel').value,V=document.getEl
  const desc=document.createElement('span');desc.className='explain';desc.textContent=descriptions[c];d.appendChild(desc);
  if(c==='B_lang_put'||c==='C_lang_move'){const ins=document.createElement('span');ins.className='instruction';ins.textContent='“'+UC.instr[c]+'”';d.appendChild(ins);}
  const sp=document.createElement('span');sp.className='outcome';sp.textContent='Outcome: '+(UC.rows[e][c]||'not available')+(c==='D_steer'?` (α = ${UC.chosen})`:'');d.appendChild(sp);R.appendChild(d);});
- document.getElementById('unote').textContent='Original instruction: “'+UC.instr.A_original+'”. Each caption describes the video column directly above it.';
+ document.getElementById('unote').textContent='Each caption describes the video column directly above it.';
  document.getElementById('ucontrols').classList.toggle('hidden',!UC.videos[e]);
  const sk=document.querySelector('[data-seek="uvid"]');if(sk)sk.value=0;
  upath(e);}
