@@ -26,7 +26,7 @@ window.SITE_CONTENT = {
     "situation_04": "Adapting to a change in intent",
     "situation_05": "In offline, the VLA model is trained with the original instruction:",
     "situation_06": "= “Put the white mug on the left plate and put the yellow-and-white mug on the right plate.”",
-    "situation_07": "Under this instruction, the policy is also trained to start with the white mug.",
+    "situation_07": "Under this instruction, the policy is also trained with expert demonstrations in which the white mug is handled first.",
     "situation_08": "Now the intent changes. We want the robot to",
     "situation_09": "move only the yellow-and-white mug to the right plate, while leaving the white mug in place. We can either (1) change the instruction, or (2) keep the original instruction",
     "situation_10": "and steer the policy's representation without any additional fine-tuning, training, or data collection.",
