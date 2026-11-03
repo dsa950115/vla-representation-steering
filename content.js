@@ -10,7 +10,7 @@ window.SITE_CONTENT = {
     "general_07": "Code",
     "general_08": "◐",
     // 메인 제목 · 저자 · 소개
-    "top_01": "Linear Representation Steering",
+    "top_01": "Representation Steering",
     "top_02": "for Vision-Language-Action Models",
     "top_03": "Minseok Jeong, Hyewon Choi, Tsukamoto Hiroyasu, SooJean Han",
     "top_04": "OpenVLA-OFT · LIBERO-10",
