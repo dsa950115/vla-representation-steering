@@ -12,7 +12,7 @@ window.SITE_CONTENT = {
     // 메인 제목 · 저자 · 소개
     "top_01": "Representation Steering",
     "top_02": "for Vision-Language-Action Models",
-    "top_03": "Minseok Jeong, Hyewon Choi, Tsukamoto Hiroyasu, SooJean Han",
+    "top_03": "Minseok Jeong, Hyewon Choi, Hiroyasu Tsukamoto, SooJean Han",
     "top_04": "OpenVLA-OFT · LIBERO-10",
     "top_05": "Experiments",
     "top_06": "Redirect a robot by steering its internal representation. A probe reads what an action will do; the action head turns that insight into a direction.",
