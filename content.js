@@ -1,6 +1,5 @@
 window.SITE_CONTENT = {
   text: {
-    // 탭 제목 · 메뉴
     "general_01": "Representation Steering · OpenVLA-OFT",
     "general_02": "Skip to content",
     "general_03": "VLA",
@@ -9,14 +8,12 @@ window.SITE_CONTENT = {
     "general_06": "Method",
     "general_07": "Code",
     "general_08": "◐",
-    // 메인 제목 · 저자 · 소개
     "top_01": "Representation Steering",
     "top_02": "for Vision-Language-Action Models",
     "top_03": "Minseok Jeong, Hyewon Choi, Hiroyasu Tsukamoto, SooJean Han",
     "top_04": "OpenVLA-OFT · LIBERO-10",
     "top_05": "Experiments",
     "top_06": "Redirect a robot by steering its internal representation. A probe reads what an action will do; the action head turns that insight into a direction.",
-    // 상황 설명 · 데모 · 결과 설명
     "situation_01": "⚠",
     "situation_02": "Preview",
     "situation_03": ", placeholder data: the videos, counts and paths below are synthetic,\n only to show the layout.",
@@ -26,7 +23,7 @@ window.SITE_CONTENT = {
     "situation_07": "Under this instruction, the policy is also trained with expert demonstrations in which the white mug is handled first.",
     "situation_08": "Now the intent changes. We want the robot to",
     "situation_09": "move only the yellow-and-white mug to the right plate, while leaving the white mug in place. We can either (1) change the instruction, or (2) keep the original instruction",
-    "situation_10": "and steer the policy's representation without any additional fine-tuning, training, or data collection.",
+    "situation_10": "and steer the policy's representation.",
     "situation_11": "Inference-Time Adaptation via Representation Steering",
     "situation_12": "Using the already-fitted probe and the model's own action head, our method adapts to the new intent at inference time while keeping the policy weights and the original instruction unchanged.",
     "situation_13": "Held-out start",
@@ -39,7 +36,7 @@ window.SITE_CONTENT = {
     "situation_20": "Play / pause",
     "situation_21": "Replay",
     "situation_22": "Effect of steering strength",
-    "situation_23": "Same instruction and target, with α below the fixed strength. Rather than committing, the robot can switch between objects: it heads for one mug, turns to another, and sometimes knocks one over. Each example shows one failed run at each weaker strength, from different starts.",
+    "situation_23": "Same instruction and target, with α below 56. Rather than committing, the robot can switch between objects: it heads for one mug, turns to another, and sometimes knocks one over. Each example shows one failed run at each weaker strength, from different starts.",
     "situation_24": "Example",
     "situation_25": "On the held-out starts, changing the instruction succeeds in",
     "situation_26": "–",
@@ -48,14 +45,19 @@ window.SITE_CONTENT = {
     "situation_29": "Success on held-out starts",
     "situation_30": "Success: the yellow-and-white mug rests upright on the right plate, the white mug is never lifted and moves less\n   than 3 cm, within 15 s. Fixed before the test run.",
     "situation_31": "Success by steering strength",
-    "situation_32": "Outcome by steering strength (α = 16 moves the head input by 8% of its norm per re-plan).\n   Weak pushes leave the learned habit in place, intermediate ones leave the policy undecided; only the strongest one redirects it\n   reliably.",
+    "situation_32": "Outcome by steering strength (α = 16 moves the head input by 8% of its norm per re-plan).\n   Weak pushes leave the learned habit in place and intermediate ones leave the policy undecided; at α = 56, steering redirects\n   it reliably, and pushing further, to α = 80, degrades performance.",
     "situation_33": "How this was set up, and its limits",
     "situation_34": "What we choose: the target quantity (distance of the end effector to a point above the yellow-and-white mug, at the\n   height the demonstrations reach before grasping it), the strength α and the release rule (stop steering within 5 cm of that\n   point, once the mug is lifted, or after 4.8 s). The direction itself comes from the probe and the model's own action head,\n   recomputed at every re-plan; no simulator query, no new data, no training.",
     "situation_35": "Two runs. First: the height margin chosen on 12 development starts, several strengths tested on 13 other held-out starts.\n   Confirmation: the strongest one (α = 56) fixed in advance, probes refit on the other half of the episodes, and 25 new held-out\n   starts, each run once; the weaker strengths were run on the same starts afterwards. Everything on this page is from the\n   confirmation run.",
     "situation_36": "The strengths used here are larger than the range in which the paper validates local steering (see the paper).",
     "situation_37": "After placing the yellow-and-white mug the policy stops: in its demonstrations, that scene is the end of the task. Moving the\n   white mug next would need further steering.",
     "situation_38": "One model, one task. A policy that follows language more closely may respond to the new instruction.",
-    // Method 설명
+    "situation_39": "Against fixed steering vectors",
+    "situation_40": "Same task, starts, intervention site, strength unit and release rule; only the direction differs. Each baseline is one vector, used unchanged in every state. Every method, ours included, is run at six strengths and shown at its best.",
+    "situation_41": "Changing the instruction vs. steering the representation",
+    "situation_42": "The goal is to move only the yellow-and-white mug to the right plate, leaving the white mug in place. Top row: the original instruction and three rewritten ones, without steering. Bottom row: the original instruction with steering, along three fixed vectors from the steering literature and along our direction, each at its best strength.",
+    "situation_43": "Baselines: three fixed steering vectors (CAA with an outcome contrast, CAA with a behaviour contrast, and the weight of a linear probe), built from the fitting episodes and applied with the same intervention site, strength unit, re-plan schedule and release rule. Each method, ours included, runs at six strengths and is shown at its best.",
+    "situation_44": "Fixed vectors built from the same information as ours (ψ and the fitting data) stay well below it even at their best strength. The behaviour contrast comes closer, but it needs the task phases labelled by hand; ours needs only ψ. At α = 80, every direction derived from ψ breaks down, ours included.",
     "how_01": "A probe reads, from the representation, what any candidate action chunk would do to a physical quantity ψ, here the\n distance of the end effector to a point above the yellow-and-white mug. Pulling that read-out back through the action head gives a\n direction in the representation; pushing along it steers the policy. No simulator query, no new data, no training.",
     "how_02": "Steering parameters",
     "how_03": "The quantity ψ, the strength α and the release rule. The direction itself comes from the probe and the\n   model's own action head.",
@@ -63,7 +65,6 @@ window.SITE_CONTENT = {
     "how_05": "Small pushes bias the robot towards the chosen quantity. Changing which object it\n   goes for needs the larger, released pushes of the use case, beyond that validated range.",
     "how_06": "Experimental setting",
     "how_07": "One model (OpenVLA-OFT), one LIBERO-10 task, the 32 leading principal directions of the\n   action-head input.",
-    // Code 설명 · 표 · 하단 안내
     "code_01": "The experiments run as individual Colab cells. Outputs are saved in",
     "code_02": "on Drive and read by subsequent steps. See",
     "code_03": "for the run order and",
@@ -71,7 +72,7 @@ window.SITE_CONTENT = {
     "code_05": "Running the code",
     "code_06": "Unzip",
     "code_07": "in the Colab working directory. For example:",
-    "code_08": "GPU steps load the model or simulator; CPU steps analyse saved results. Use an A100 GPU, or an L4 for steps 16 and 18. Environment setup takes 15–25 minutes in the first GPU cell. Long runs save checkpoints to Drive and resume when the cell is rerun.",
+    "code_08": "GPU steps load the model or simulator; CPU steps analyse saved results. Use an A100 GPU, or an L4 for steps 16, 18 and 18b. Environment setup takes 15–25 minutes in the first GPU cell. Long runs save checkpoints to Drive and resume when the cell is rerun.",
     "code_09": "Experiment scripts and run order",
     "code_10": "OpenVLA-OFT",
     "code_11": "Step",
@@ -140,7 +141,7 @@ window.SITE_CONTENT = {
     "code_74": "Held-out episodes everywhere: folds by episode (even / odd for steering), seed 0.",
     "code_75": "One unit of α moves the head input by 0.5% of its norm; finite-difference step 0.25 (standardized units).",
     "code_76": "Use-case success: the yellow-and-white mug upright on the right plate, the white mug never lifted and moved less than\n     3 cm, within 15 s; fixed before the runs.",
-    "code_77": "Anonymous research supplementary ·",
+    "code_77": "Project supplementary material ·",
     "code_78": "Back to top",
     "code_79": "Website template adapted from",
     "code_80": "Nerfies",
@@ -148,7 +149,6 @@ window.SITE_CONTENT = {
     "code_82": "CC BY-SA 4.0",
     "code_83": ". Layout and content integration modified for this project. This attribution concerns the website template.",
   },
-  // 버튼·링크 주소: label은 찾기 위한 설명입니다. href를 수정하세요.
   links: [
     { href: "#top" }, // 0
     { href: "#top" }, // 1

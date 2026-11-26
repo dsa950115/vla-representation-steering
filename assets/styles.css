@@ -164,7 +164,7 @@ body {
 
 /* Adaptation of nerfies/nerfies.github.io (CC BY-SA 4.0).
    Bulma v0.9.1 retains its MIT header above. Research content is separate. */
-:root{--page:#fff;--surface:#fff;--ink:#363636;--ink2:#4a4a4a;--muted:#777;--grid:#e5e5e5;--axis:#aaa;--ring:#ddd;--ours:#c34c32;--wo:#638cb0;--std:#73968c;--oracle:#aaa;--neutral:#999;--warn:#e6b34c;--sel:#f5f5f5;--o1:#638cb0;--o2:#c34c32;--o3:#73968c;--o4:#c7a04d;--o5:#b88bab;--a1:#86b6ef;--a2:#5598e7;--a3:#3987e5;--a4:#256abf;--a5:#0d366b}
+:root{--page:#fff;--surface:#fff;--ink:#363636;--ink2:#4a4a4a;--muted:#777;--grid:#e5e5e5;--axis:#aaa;--ring:#ddd;--ours:#c34c32;--wo:#638cb0;--std:#73968c;--oracle:#aaa;--neutral:#999;--warn:#e6b34c;--sel:#f5f5f5;--o1:#2f9e5b;--o2:#9e2a20;--o3:#d9483b;--o4:#ec8a7c;--o5:#f4c0b8;--a1:#86b6ef;--a2:#5598e7;--a3:#3987e5;--a4:#256abf;--a5:#0d366b}
 html{scroll-behavior:smooth;scroll-padding-top:24px}body{line-height:1.65}.publication-title,.publication-authors{font-family:'Noto Sans',sans-serif}
 main>.section{padding:3rem 1.5rem}main>.hero .hero-body{padding:3rem 1.5rem 2rem}.publication-title{max-width:940px;margin-left:auto;margin-right:auto}.publication-authors{margin:1rem 0}.publication-links{margin-top:1.5rem}.publication-links .button{margin:4px}.publication-subtitle{font-size:1.2rem;max-width:800px;margin:1.5rem auto 0}
 nav.top .in{display:flex;justify-content:center;gap:28px;padding:16px;font-size:14px}nav.top a{color:#555}nav.top .brand,nav.top .sp,#theme{display:none}
@@ -348,3 +348,7 @@ h2.title.is-3{font-family:inherit;font-size:34px;font-weight:400;line-height:1.3
 @font-face{font-family:'Page Math';src:url(font-5.woff) format('woff');font-weight:400;font-style:normal;font-display:swap}
 .math-inline{font-family:'Page Math','Cambria Math',math!important;font-size:1.12em;font-style:normal;font-weight:400;line-height:0;white-space:nowrap;vertical-align:-.035em;letter-spacing:0;text-transform:none}
 math{font-family:'Page Math','Cambria Math',math;font-size:1.08em;math-style:normal}
+
+/* baseline comparison (step 18b) */
+.ln{display:inline-block;width:18px;height:0;border-top:2.5px solid;margin-right:6px}.ld{display:inline-block;width:18px;height:0;border-top:2px dashed;margin-right:6px}#bcard .grid2{margin:1rem 0}#btab th,#btab td{text-align:left}#btab td:last-child,#btab th:last-child{text-align:right;white-space:nowrap}tr.sub td{color:var(--ink2)}
+.dko{display:inline-block;width:9px;height:9px;border-radius:50%;border:1.8px dashed;margin-right:6px}

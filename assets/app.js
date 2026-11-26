@@ -143,17 +143,58 @@ function uinit(){if(!UC){document.getElementById('uavid').classList.add('hidden'
  const S=document.getElementById('usel');const succ=e=>UC.rows[e].D_steer==='success';
  const eps=[...UC.eps].sort((a,b)=>(succ(b)-succ(a))||(a-b));
  eps.forEach(e=>{const o=document.createElement('option');o.value=e;o.textContent=`start ${e}`+(succ(e)?' · steering succeeds':'');S.appendChild(o);});
- S.onchange=ushow;ushow();utab();winit();}
+ if(UC.compare){const T=(window.SITE_CONTENT||{}).text||{},H=document.querySelector('#demo .demo-part .row-heading');
+  if(H&&T.situation_41){H.querySelector('h3').textContent=T.situation_41;H.querySelector('p').textContent=T.situation_42||'';}}
+ S.onchange=ushow;ushow();utab();winit();bshow();}
+const BCOL=['--wo','--std','--o4'];
+function bshow(){const B=UC&&UC.baselines,C=document.getElementById('bcard');if(!B){C.classList.add('hidden');return;}
+
+ C.classList.remove('hidden');bline();btab();
+ document.getElementById('bnote').textContent=(D.preview?'Preview, placeholder numbers. ':'')+'Input: what the direction is built from (labelled phases: which mug the arm heads for, marked by hand-written rules). p: exact McNemar test over the same '+
+  `${B.ours_n} starts, each method at its best strength.`;}
+function bline(){const B=UC.baselines,S=document.getElementById('bline');clear(S);const W=cw('bline'),H=260,m={l:44,r:12,t:12,b:40};
+ S.setAttribute('viewBox',`0 0 ${W} ${H}`);
+ const ours=B.ours_rows||(UC.strength||[]).filter(s=>!s.first_run).map(s=>({alpha:s.alpha,k:s.counts[0],n:s.n}));
+ const ser=[{n:'steering (ours)',c:css('--ours'),pts:ours,w:2.6}].concat(Object.keys(B.rows).map((k,i)=>({n:B.label[k],c:css(BCOL[i%BCOL.length]),pts:B.rows[k],w:1.6})));
+ const al=[...new Set(ser.flatMap(s=>s.pts.map(p=>p.alpha)))].sort((a,b)=>a-b);if(!al.length)return;
+ const x=sc(al[0],al[al.length-1],m.l+10,W-m.r-10),y=sc(0,100,H-m.b,m.t);
+ for(let t=0;t<=100;t+=25){el('line',{x1:m.l,x2:W-m.r,y1:y(t),y2:y(t),stroke:css('--grid')},S);txt(S,m.l-8,y(t)+4,t+'%',{'text-anchor':'end'});}
+ al.forEach(a=>txt(S,x(a),H-m.b+17,String(a)+(a===UC.chosen?' *':''),{'text-anchor':'middle',style:a===UC.chosen?'font-weight:600;fill:'+css('--ink'):''}));
+ const n=UC.eps.length,kl=Math.max(...['B_lang_put','C_lang_move'].map(c=>UC.eps.filter(e=>UC.rows[e][c]==='success').length));
+ el('line',{x1:m.l,x2:W-m.r,y1:y(100*kl/n),y2:y(100*kl/n),stroke:css('--muted'),'stroke-dasharray':'5 4','stroke-width':1.4},S);
+ ser.slice().reverse().forEach(s=>{const P=s.pts.slice().sort((a,b)=>a.alpha-b.alpha);if(!P.length)return;
+  el('path',{d:P.map((p,i)=>(i?'L':'M')+x(p.alpha)+' '+y(100*p.k/p.n)).join(' '),fill:'none',stroke:s.c,'stroke-width':s.w,'stroke-linejoin':'round'},S);
+  P.forEach(p=>{const g=el('g',{},S);el('circle',{cx:x(p.alpha),cy:y(100*p.k/p.n),r:s.w>2?4.5:3.2,fill:s.c,stroke:css('--surface'),'stroke-width':1.5},g);
+   el('circle',{cx:x(p.alpha),cy:y(100*p.k/p.n),r:11,fill:'transparent'},g);
+   g.addEventListener('pointermove',ev=>showTip(ev,`${s.n}, α = ${p.alpha}`,[{n:'success',v:`${Math.round(100*p.k/p.n)}%  (${p.k} of ${p.n})`,c:s.c}]));
+   g.addEventListener('pointerleave',hideTip);});});
+ const oc=ours.find(p=>p.alpha===UC.chosen);if(oc)el('circle',{cx:x(oc.alpha),cy:y(100*oc.k/oc.n),r:8,fill:'none',stroke:css('--ours'),'stroke-width':1.4},S);
+ legend('bleg',ser.map(s=>({k:'ln',dash:s.c,n:s.n})).concat([{k:'ld',dash:css('--muted'),n:'instruction changed'}]));
+ txt(S,(m.l+W-m.r)/2,H-6,W<520?'strength α  (* used in the demo)':'steering strength α  (success on held-out starts; * used in the demo)',{'text-anchor':'middle'});}
+function btab(){const B=UC.baselines,T=document.getElementById('btab');clear(T);const tb=document.createElement('table');const hr=document.createElement('tr');
+ ['direction','input','best success','p vs ours'].forEach(h=>{const th=document.createElement('th');th.textContent=h;hr.appendChild(th);});tb.appendChild(hr);
+ const row=(cells,cls,tip)=>{const tr=document.createElement('tr');if(cls)tr.className=cls;if(tip)tr.title=tip;cells.forEach(v=>{const td=document.createElement('td');td.textContent=v;tr.appendChild(td);});tb.appendChild(tr);};
+ const pct=(k,n)=>`${Math.round(100*k/n)}%`;
+ row(['steering (ours)','ψ',`${pct(B.ours_k,B.ours_n)}  (α ${B.ours_alpha})`,'–'],'ours',`${B.ours_k} of ${B.ours_n}`);
+ Object.keys(B.best).forEach(c=>{const d=B.best[c];
+  row([B.label[c],B.needs[c],`${pct(d.k,d.n)}  (α ${d.alpha})`,d.p<0.001?'<0.001':d.p.toFixed(3)],'sub',
+   `${d.k} of ${d.n}; starts only ours solves: ${d.only_ours}, only the baseline solves: ${d.only_base}`);});
+ T.appendChild(tb);}
 function ushow(){const e=+document.getElementById('usel').value,V=document.getElementById('uvid'),P=document.getElementById('uph');
- if(UC.videos[e]){V.classList.remove('hidden');P.classList.add('hidden');V.src='videos/'+UC.videos[e];/* Playback starts only when the visitor requests it. */}
+ const CV=UC.compare&&UC.compare.videos[e],SRC=CV||UC.videos[e];
+ if(SRC){V.classList.remove('hidden');P.classList.add('hidden');V.src='videos/'+SRC;/* Playback starts only when the visitor requests it. */}
  else{V.classList.add('hidden');P.classList.remove('hidden');}
  const descriptions={A_original:"The learned sequence starts with the white mug.",B_lang_put:"Ask for only the yellow-and-white mug using ‘put’.",C_lang_move:"Try the same intent with a different verb: ‘move’.",D_steer:"Keep the original instruction. Steer toward the yellow-and-white mug, then release the policy to finish."};
- const R=document.getElementById('uread');clear(R);UC.cond.forEach(c=>{const d=document.createElement('div');const b=document.createElement('b');b.textContent=UC.label[c];d.appendChild(b);
- const desc=document.createElement('span');desc.className='explain';desc.textContent=descriptions[c];d.appendChild(desc);
- if(c==='B_lang_put'||c==='C_lang_move'){const ins=document.createElement('span');ins.className='instruction';ins.textContent='“'+UC.instr[c]+'”';d.appendChild(ins);}
- const sp=document.createElement('span');sp.className='outcome';sp.textContent='Outcome: '+(UC.rows[e][c]||'not available')+(c==='D_steer'?` (α = ${UC.chosen})`:'');d.appendChild(sp);R.appendChild(d);});
- document.getElementById('unote').textContent='Each caption describes the video column directly above it.';
- document.getElementById('ucontrols').classList.toggle('hidden',!UC.videos[e]);
+ Object.assign(descriptions,{'CAA-QoI':'One fixed vector: the mean representation of the states where ψ improved most, minus where it improved least.','CAA-behavior':'One fixed vector: states heading for the yellow-and-white mug, minus states heading for the white mug.','probe weight':'One fixed vector: the weight of a linear probe of ψ that does not see the action.','E_lang_leave':'Also say which mug to leave alone.'});
+ const BL=UC.baselines?UC.baselines.label:{},ORDER=CV?UC.compare.order:UC.cond;
+ const R=document.getElementById('uread');clear(R);ORDER.forEach(c=>{const d=document.createElement('div');const b=document.createElement('b');
+ if(c===null){b.textContent='Layout';d.appendChild(b);const x=document.createElement('span');x.className='explain';x.textContent='Top row: no steering. Bottom row: steering with the original instruction, three fixed vectors and ours (orange frame).';d.appendChild(x);R.appendChild(d);return;}
+ b.textContent=UC.label[c]||BL[c]||c;d.appendChild(b);
+ const desc=document.createElement('span');desc.className='explain';desc.textContent=descriptions[c]||'';d.appendChild(desc);
+ if(c==='B_lang_put'||c==='C_lang_move'||(UC.extra_instr||[]).includes(c)){const ins=document.createElement('span');ins.className='instruction';ins.textContent='“'+UC.instr[c]+'”';d.appendChild(ins);}
+ const sp=document.createElement('span');sp.className='outcome';sp.textContent='Outcome: '+(UC.rows[e][c]||'not available')+(c==='D_steer'?` (α = ${UC.chosen})`:(CV&&UC.compare.alpha[c]!==undefined?` (α = ${UC.compare.alpha[c]})`:''));d.appendChild(sp);R.appendChild(d);});
+ document.getElementById('unote').textContent=CV?'The captions follow the 2 × 4 layout of the video.':'Each caption describes the video column directly above it.';
+ document.getElementById('ucontrols').classList.toggle('hidden',!SRC);
  const sk=document.querySelector('[data-seek="uvid"]');if(sk)sk.value=0;
  upath(e);}
 function winit(){const W=UC.weak,S=document.getElementById('wsel');clear(S);
@@ -171,13 +212,12 @@ function wshow(){const W=UC.weak,s=W.sets[+document.getElementById('wsel').value
  AR.style.gridTemplateColumns=cols;AP.style.gridTemplateColumns=cols;
  if(s.video){AV.classList.remove('hidden');AP.classList.add('hidden');AV.src='videos/'+s.video;}else{AV.classList.add('hidden');AP.classList.remove('hidden');}
  document.getElementById('uacontrols').classList.toggle('hidden',!s.video);const sk=document.querySelector('[data-seek="uavid"]');if(sk)sk.value=0;
- document.getElementById('uanote').textContent=(D.preview?'Preview, placeholder cases. ':'')+`Picked, not typical: among the ${W.n_fail} failed runs at α = ${W.alphas.join(', ')} (${W.n_eps} starts each${W.first_run?', first run':''}), these switch heading most often or knock a mug over. `+
-  `${W.n_switch} of the ${W.n_fail} switch between mugs at least once and ${W.n_tip} knock a mug over. Headings are read from the end-effector path: the mug it closes in on fastest, held for at least 0.6 s.`;}
+ document.getElementById('uanote').textContent=D.preview?'Preview, placeholder cases.':'';}
 function utab(){const T=document.getElementById('utab');clear(T);const tb=document.createElement('table');const hr=document.createElement('tr');
  ['condition','instruction','success rate'].forEach(h=>{const th=document.createElement('th');th.textContent=h;hr.appendChild(th);});tb.appendChild(hr);
  const pct=(k,n)=>n?`${Math.round(100*k/n)}%`:'–';
  const row=(cells,cls,tip)=>{const tr=document.createElement('tr');if(cls)tr.className=cls;if(tip)tr.title=tip;cells.forEach(v=>{const td=document.createElement('td');td.textContent=v;tr.appendChild(td);});tb.appendChild(tr);};
- UC.cond.filter(c=>c!=='D_steer').forEach(c=>{const n=UC.eps.filter(e=>UC.rows[e][c]).length,k=UC.eps.filter(e=>UC.rows[e][c]==='success').length;
+ UC.cond.filter(c=>c!=='D_steer').concat(UC.extra_instr||[]).forEach(c=>{const n=UC.eps.filter(e=>UC.rows[e][c]).length,k=UC.eps.filter(e=>UC.rows[e][c]==='success').length;
   row([UC.label[c],c==='A_original'?'original':'changed',pct(k,n)],'',`${k} of ${n}`);});
  const ST=UC.strength&&UC.strength.length?UC.strength:[{alpha:UC.chosen,counts:[UC.eps.filter(e=>UC.rows[e].D_steer==='success').length],n:UC.eps.length}];
  ST.forEach(s=>row([s.alpha===UC.chosen?`steering (ours), α = ${s.alpha}`:`steering, α = ${s.alpha}`,'original',pct(s.counts[0],s.n)],
@@ -194,10 +234,10 @@ function abar(){if(!UC)return;const S=document.getElementById('abar');clear(S);c
   cnt.forEach((c,j)=>{if(!c)return;el('rect',{x:x(i)-bw/2,y:y(acc+c),width:bw,height:Math.max(0,y(acc)-y(acc+c)-2),rx:3,fill:css(OCOL[j])},g);acc+=c;});
   txt(S,x(i),H-m.b+18,String(a)+(a===UC.chosen?' *':''),{'text-anchor':'middle',style:a===UC.chosen?'font-weight:600;fill:'+css('--ink'):''});
   el('rect',{x:x(i)-bw/2-6,y:m.t,width:bw+12,height:H-m.t-m.b,fill:'transparent'},g);
-  g.addEventListener('pointermove',ev=>showTip(ev,`α = ${a}`+(a===UC.chosen?(UC.confirm?' (fixed in advance)':' (chosen on dev)'):''),
+  g.addEventListener('pointermove',ev=>showTip(ev,`α = ${a}`+(a===UC.chosen?(UC.confirm?'':' (chosen on dev)'):''),
    UC.outcomes.map((o,j)=>({n:o,v:`${Math.round(cnt[j])}%  (${s.counts[j]} of ${s.n})`,c:css(OCOL[j])}))));
   g.addEventListener('pointerleave',hideTip);});
- wtext(S,(m.l+W-m.r)/2,H-12,`steering strength α  (share of held-out starts; * ${UC.confirm?'fixed in advance':'chosen on development starts'})`,W-16,{'text-anchor':'middle',style:'font-size:11px'});}
+ wtext(S,(m.l+W-m.r)/2,H-12,`steering strength α  (share of held-out starts; * the strength used in the demo)`,W-16,{'text-anchor':'middle',style:'font-size:11px'});}
 function upath(e){const S=document.getElementById('upath');if(!S)return;clear(S);if(!UC)return;const ps=UC.paths[e]||{},ob=UC.objs[e]||{};
  const W=cw('upath'),H=Math.round(Math.min(400,W*0.62)),m={l:44,r:14,t:14,b:40};S.setAttribute('viewBox',`0 0 ${W} ${H}`);
  const keys=['none'].concat(UC.sweep.map(a=>String(a))).filter(k=>ps[k]);const T=p=>[-p[1],p[0]];
@@ -216,19 +256,19 @@ function upath(e){const S=document.getElementById('upath');if(!S)return;clear(S)
 /* ---------- code link ---------- */
 {const L=document.getElementById('codelink'),add=(href,t)=>{const a=document.createElement('a');a.href=href;a.textContent=t;L.appendChild(a);};
  if(location.protocol!=='file:')fetch('code.zip',{method:'HEAD'}).then(r=>{if(r.ok)L.prepend(Object.assign(document.createElement('a'),{href:'code.zip',textContent:'Download code.zip'}));}).catch(()=>{});
- if(D.repo_url)add(D.repo_url,'Anonymous repository');}
+ if(D.repo_url)add(D.repo_url,'Project repository');}
 
 /* ---------- draw all + theme ---------- */
-function heroNums(){if(!UC)return;const n=UC.eps.length,lang=['B_lang_put','C_lang_move'];
+function heroNums(){if(!UC)return;const n=UC.eps.length,lang=['B_lang_put','C_lang_move'].concat(UC.extra_instr||[]);
  const kl=lang.reduce((s,c)=>s+UC.eps.filter(e=>UC.rows[e][c]==='success').length,0);
  const ks=UC.eps.filter(e=>UC.rows[e].D_steer==='success').length;
  document.getElementById('hl1').textContent=`${kl} of ${lang.length*n} runs`;
- document.getElementById('hl2').textContent=UC.confirm?`${ks} of ${n} new held-out starts, with the strength fixed in advance`
+ document.getElementById('hl2').textContent=UC.confirm?`${ks} of ${n} new held-out starts`
   :`${ks} of ${n} held-out starts at the strength chosen on development starts`;}
 function drawAll(){chain();overview();tiles();
- if(UC){abar();upath(+document.getElementById('usel').value);}}
+ if(UC){abar();upath(+document.getElementById('usel').value);if(UC.baselines)bline();}}
 // Both rows show the original grid video, cropped without altering its pixels.
-['uvid','uavid'].forEach(id=>{const video=document.getElementById(id);video.addEventListener('loadedmetadata',()=>{const rows=id==='uvid'&&UC&&UC.grid_rows?(UC.grid_rows[document.getElementById('usel').value]||1):1;
+['uvid','uavid'].forEach(id=>{const video=document.getElementById(id);video.addEventListener('loadedmetadata',()=>{const sel_=document.getElementById('usel').value,rows=id==='uvid'&&UC&&UC.grid_rows&&!(UC.compare&&UC.compare.videos[sel_])?(UC.grid_rows[sel_]||1):1;
  video.parentElement.style.aspectRatio=`${video.videoWidth} / ${video.videoHeight/rows}`;});video.addEventListener('timeupdate',()=>{const seek=document.querySelector(`[data-seek="${id}"]`);seek.value=video.duration?100*video.currentTime/video.duration:0;});});
 document.querySelectorAll('[data-video]').forEach(button=>button.onclick=()=>{const v=document.getElementById(button.dataset.video);if(v.paused)v.play().catch(()=>{});else v.pause();});
 document.querySelectorAll('[data-restart]').forEach(button=>button.onclick=()=>{const v=document.getElementById(button.dataset.restart);v.currentTime=0;v.play().catch(()=>{});});
